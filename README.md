@@ -288,3 +288,4 @@ app.vardump(result)
 - getNotificationSettings(scope, chat_id)
 - ```searchChatMessages(chat_id, query, filter, sender_user_id, from_message_id, offset, limit)```
 - getMessages(chat_id, message_ids)
+- ```sendPoll(chat_id, reply_to_message_id, question, options, pollType, is_anonymous, allow_multiple_answers)```
