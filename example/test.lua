@@ -19,9 +19,11 @@ function main(update)
   elseif (update.luagram == 'updateMessageEdited') then
     update = app.getMessage(update.chat_id, update.message_id)
   end
-  if update.content.text and update.content.text.text:match('ping') then
+  if update.content.text then
+  if app.lgmatch('ping','luagram')[update.content.text.text] then
     app.sendText(update.chat_id, update.id, "%{Hi I'm,b} a %{luagram,github.com/luagram/luagram}",'lg',true)
   end
+end
 end
 local filter_update = {
   'updateNewMessage',
