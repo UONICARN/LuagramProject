@@ -525,8 +525,8 @@ function luagram_function.cancel_timer(timer_id)
 end
 function luagram_function.match(...)
   val = {}
-  for no,va; in ipairs({...}) do 
-      val[va] = true 
+  for no,v in ipairs({...}) do 
+      val[v] = true 
       end
   return val
     end
