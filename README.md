@@ -52,9 +52,12 @@ local app = luagram.set_config{
 function main(update)
   if update.message then
     local update = update.message
-    if update.content.text and update.content.text.text:match('ping') then
+    if update.content.text  then
+    if app.match('ping','luagram')[update.content.text.text] then
       app.sendText(update.chat_id, update.id, "%{Hi I'm,b} a %{luagram,github.com/luagram/luagram}",'lg',true)
     end
+  end
+  end
   end
 end
 local filter_update = {
