@@ -1,7 +1,7 @@
 
 <p align="center"><a href="https://t.me/Luagramteam"><img src="https://raw.githubusercontent.com/luagramteam/luagramproject/master/luagram.png" width="300"src="">
 </p>
-                                                   L U A G R A M
+L U A G R A M
 ---
                                                             
 <div align="center">
