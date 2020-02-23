@@ -1,5 +1,5 @@
 #!/usr/bin/env lua5.3
--- version 1.2
+-- version 1.0
 -- github.com/luagram
 local luagram_function, function_core, update_functions, luagram_timer = {}, {}, {}, {}
 local luagram = {
@@ -10,9 +10,10 @@ local luagram = {
 | |___| |_| |/ ___ \  | |_| ||  _ <  / ___ \ | |  | |
 |_____|\___//_/   \_\  \____||_| \_\/_/   \_\|_|  |_|
 
-VERSION : 1.2 / BETA
+VERSION : 1.0 / BETA
 ]],
 luagram_helper = {
+      ['match'] = 'function > match(table)[string]',
       ['base64_encode'] = ' function > base64_encode(str)',
       ['base64_decode'] = ' function > base64_decode(str)',
       ['number_format'] = ' function > number_format(number)',
@@ -221,6 +222,7 @@ luagram_helper = {
       ['sendContact'] = ' function > sendContact(chat_id, reply_to_message_id, phone_number, first_name, last_name, user_id, disable_notification, from_background, reply_markup)',
       ['sendInvoice'] = ' function > sendInvoice(chat_id, reply_to_message_id, invoice, title, description, photo_url, photo_size, photo_width, photo_height, payload, provider_token, provider_data, start_parameter, disable_notification, from_background, reply_markup)',
       ['sendForwarded'] = ' function > sendForwarded(chat_id, reply_to_message_id, from_chat_id, message_id, in_game_share, disable_notification, from_background, reply_markup)',
+      ['sendPoll'] = 'function > sendPoll(chat_id, reply_to_message_id, question, options, pollType, is_anonymous, allow_multiple_answers)'
 },
 colors_key = {
   reset =      0,
@@ -331,6 +333,30 @@ function_core.send_tdlib{
 LuaGram.setLogLevel(3)
 LuaGram.setLogPath('/usr/lib/x86_64-linux-gnu/lua/5.3/.luagram.log')
 -----------------------------------------------luagram_function
+function luagram_function.match(...)
+  local val = {}
+  for no,v in ipairs({...}) do
+    val[v] = true
+  end
+  return val
+end
+function luagram_function.poll(chat_id)
+  return function_core.run_table{
+      luagram = 'sendMessage',
+      chat_id = chat_id,
+      reply_to_message_id = reply_to_message_id or 0,
+      input_message_content = {
+        luagram = 'inputMessagePoll',
+        is_anonymous = true,
+        question = 'test',
+        type = {
+          luagram = 'pollTypeRegular',
+          allow_multiple_answers = false
+        },
+        options = {'t','test2'}
+    }
+  }
+end
 function luagram_function.secToClock(seconds)
   local seconds = tonumber(seconds)
   if seconds <= 0 then
@@ -523,13 +549,6 @@ function luagram_function.cancel_timer(timer_id)
     }
   end
 end
-function luagram_function.match(...)
-  val = {}
-  for no,v in ipairs({...}) do 
-      val[v] = true 
-      end
-  return val
-    end
 function luagram_function.getChatId(chat_id)
   local chat_id = tostring(chat_id)
   if chat_id:match('^-100') then
@@ -592,7 +611,7 @@ function luagram_function.parseTextEntities(text, parse_mode)
     for txt in text:gmatch('%%{(.-)}') do
       local _text, text_type = txt:match('(.*),(.*)')
       if type(_text) == 'string' and type(text_type) == 'string' then
-	local text_type = string.gsub(text_type,' ','')
+        local text_type = string.gsub(text_type,' ','')
         if (string.lower(text_type) == 'b' or string.lower(text_type) == 'i' or string.lower(text_type) == 'c') then
           local text_type = string.lower(text_type)
           local text_type = text_type == 'c' and 'code' or text_type
@@ -2302,6 +2321,19 @@ function luagram_function.sendForwarded(chat_id, reply_to_message_id, from_chat_
     in_game_share = in_game_share
   }
   return luagram_function.sendMessage(chat_id, reply_to_message_id, input_message_content, nil, disable_notification, from_background, reply_markup)
+end
+function luagram_function.sendPoll(chat_id, reply_to_message_id, question, options, pollType, is_anonymous, allow_multiple_answers)
+  local input_message_content = {
+      luagram = 'inputMessagePoll',
+      is_anonymous = is_anonymous,
+      question = question,
+      type = {
+        luagram = 'pollType'..pollType,
+        allow_multiple_answers = allow_multiple_answers
+      },
+      options = options
+    }
+  return luagram_function.sendMessage(chat_id, reply_to_message_id, input_message_content, parse_mode, disable_notification, from_background, reply_markup)
 end
 function luagram.VERSION()
   print(luagram_function.colors('%{yellow}\27[5m'..luagram.logo),'\n\n')
