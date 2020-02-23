@@ -120,7 +120,7 @@ luagram_helper = {
       ['generateChatInviteLink'] = ' function > generateChatInviteLink(chat_id)',
       ['checkChatInviteLink'] = ' function > checkChatInviteLink(invite_link)',
       ['joinChatByInviteLink'] = ' function > joinChatByInviteLink(invite_link)',
-      ['joinChatByUsernam'] = ' function > joinChatByUsernam(username)',
+      ['joinChatByUsername'] = ' function > joinChatByUsername(username)',
       ['createCall'] = ' function > createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer)',
       ['acceptCall'] = ' function > acceptCall(call_id, udp_p2p, udp_reflector, min_layer, max_layer)',
       ['blockUser'] = ' function > blockUser(user_id)',
@@ -1443,7 +1443,7 @@ function luagram_function.generateChatInviteLink(chat_id)
     chat_id = chat_id
   }
 end
-function luagram_function.joinChatByUsernam(username)
+function luagram_function.joinChatByUsername(username)
   if type(username) == 'string' and 5 <= #username then
     local result = luagram_function.searchPublicChat(username)
     if result.type and result.type.luagram == 'chatTypeSupergroup' then
