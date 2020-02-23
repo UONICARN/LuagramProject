@@ -21,7 +21,7 @@ L U A G R A M V-1.2
 
 git clone https://github.com/luagram/LuagramProject.git
 
-cd luagram
+cd LuagramProject
 
 sudo lua5.3 setup.lua
 
