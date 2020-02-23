@@ -120,7 +120,7 @@ luagram_helper = {
       ['generateChatInviteLink'] = ' function > generateChatInviteLink(chat_id)',
       ['checkChatInviteLink'] = ' function > checkChatInviteLink(invite_link)',
       ['joinChatByInviteLink'] = ' function > joinChatByInviteLink(invite_link)',
-      ['joinChatByUsername'] = ' function > joinChatByUsername(username)',
+      ['joinChatByUsernam'] = ' function > joinChatByUsernam(username)',
       ['createCall'] = ' function > createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer)',
       ['acceptCall'] = ' function > acceptCall(call_id, udp_p2p, udp_reflector, min_layer, max_layer)',
       ['blockUser'] = ' function > blockUser(user_id)',
@@ -1257,6 +1257,22 @@ function luagram_function.upgradeBasicGroupChatToSupergroupChat(chat_id)
     chat_id = chat_id
   }
 end
+function luagram_function.setChatPermissions(chat_id, can_send_messages, can_send_media_messages, can_send_polls, can_send_other_messages, can_add_web_page_previews, can_change_info, can_invite_users, can_pin_messages)
+  return function_core.run_table{
+    luagram = 'setChatPermissions',
+    chat_id = chat_id,
+     permissions = {
+      can_send_messages = can_send_messages,
+      can_send_media_messages = can_send_media_messages,
+      can_send_polls = can_send_polls,
+      can_send_other_messages = can_send_other_messages,
+      can_add_web_page_previews = can_add_web_page_previews,
+      can_change_info = can_change_info,
+      can_invite_users = can_invite_users,
+      can_pin_messages = can_pin_messages,
+    }
+  }
+end
 function luagram_function.setChatTitle(chat_id, title)
   return function_core.run_table{
     luagram = 'setChatTitle',
@@ -1443,7 +1459,7 @@ function luagram_function.generateChatInviteLink(chat_id)
     chat_id = chat_id
   }
 end
-function luagram_function.joinChatByUsername(username)
+function luagram_function.joinChatByUsernam(username)
   if type(username) == 'string' and 5 <= #username then
     local result = luagram_function.searchPublicChat(username)
     if result.type and result.type.luagram == 'chatTypeSupergroup' then
