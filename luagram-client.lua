@@ -682,7 +682,7 @@ function luagram_function.sendMessage(chat_id, reply_to_message_id, input_messag
       for i = 1, #message do
         if input_message_content.text and input_message_content.text.text then
           luagram_body.input_message_content.text.text = message[i]
-        else
+        elseif input_message_content.caption and input_message_content.caption.text then
           luagram_body.input_message_content.caption.text = message[i]
         end
         return function_core.run_table(luagram_body)
