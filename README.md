@@ -80,6 +80,7 @@ app.vardump(result)
 
 
 ## The Functions - version 1.0 Beta
+- setChatPermissions(chat_id, can_send_messages, can_send_media_messages, can_send_polls, can_send_other_messages, can_add_web_page_previews, can_change_info, can_invite_users, can_pin_messages)
 - ```joinChatByUsername(username)```
 - match(table)[value]
 - ```help(function_name or '*')```
