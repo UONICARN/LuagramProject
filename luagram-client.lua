@@ -60,6 +60,7 @@ luagram_helper = {
       ['removeTopChat'] = ' function > removeTopChat(category, chat_id)',
       ['addRecentlyFoundChat'] = ' function > addRecentlyFoundChat(chat_id)',
       ['getCreatedPublicChats'] = ' function > getCreatedPublicChats()',
+      ['setChatPermissions'] = ' function > setChatPermissions(chat_id, can_send_messages, can_send_media_messages, can_send_polls, can_send_other_messages, can_add_web_page_previews, can_change_info, can_invite_users, can_pin_messages)',
       ['removeRecentlyFoundChat'] = ' function > removeRecentlyFoundChat(chat_id)',
       ['getChatHistory'] = ' function > getChatHistory(chat_id, from_message_id, offset, limit, only_local)',
       ['getGroupsInCommon'] = ' function > getGroupsInCommon(user_id, offset_chat_id, limit)',
