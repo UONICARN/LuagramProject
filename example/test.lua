@@ -20,7 +20,7 @@ function main(update)
     update = app.getMessage(update.chat_id, update.message_id)
   end
   if update.content.text then
-  if app.lgmatch('ping','luagram')[update.content.text.text] then
+  if app.match('ping','luagram')[update.content.text.text] then
     app.sendText(update.chat_id, update.id, "%{Hi I'm,b} a %{luagram,github.com/luagram/luagram}",'lg',true)
   end
 end
