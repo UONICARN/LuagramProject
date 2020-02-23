@@ -467,8 +467,7 @@ function luagram_function.vardump(input)
            dump = dump .. key .. ' = ' .. vardump(v) .. ',\n'
         end
         return dump .. '}'
-     elsefunction luagram_function.lgmatch(...)
-
+     else
         return tostring(value)
      end
    end
@@ -524,10 +523,10 @@ function luagram_function.cancel_timer(timer_id)
     }
   end
 end
-function string.lgmatch(...)
+function luagram_function.match(...)
   val = {}
-  for no,v in ipairs({...}) do 
-      val[v] = true 
+  for no,va; in ipairs({...}) do 
+      val[va] = true 
       end
   return val
     end
