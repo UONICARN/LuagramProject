@@ -1,5 +1,5 @@
 
-<p align="center"><a href="https://t.me/Luagramteam"><img src="https://raw.githubusercontent.com/LuagramTeam/LuagramProject/blob/master/luagram.png" width="300"src="">
+<p align="center"><a href="https://t.me/Luagramteam"><img src="https://raw.githubusercontent.com/LuagramTeam/LuagramProject/master/luagram.png" width="300"src="">
 </p>
 L U A G R A M
 ---
