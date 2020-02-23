@@ -1,5 +1,5 @@
 #!/usr/bin/env lua5.3
--- version 1.0
+-- version 1.2
 -- github.com/luagram
 local luagram_function, function_core, update_functions, luagram_timer = {}, {}, {}, {}
 local luagram = {
@@ -10,10 +10,10 @@ local luagram = {
 | |___| |_| |/ ___ \  | |_| ||  _ <  / ___ \ | |  | |
 |_____|\___//_/   \_\  \____||_| \_\/_/   \_\|_|  |_|
 
-VERSION : 1.0 / BETA
+VERSION : 1.2 / BETA
 ]],
 luagram_helper = {
-      ['match'] = 'function > match(table)[string]',
+      ['match'] = ' function > match(table)[value]',
       ['base64_encode'] = ' function > base64_encode(str)',
       ['base64_decode'] = ' function > base64_decode(str)',
       ['number_format'] = ' function > number_format(number)',
@@ -120,6 +120,7 @@ luagram_helper = {
       ['generateChatInviteLink'] = ' function > generateChatInviteLink(chat_id)',
       ['checkChatInviteLink'] = ' function > checkChatInviteLink(invite_link)',
       ['joinChatByInviteLink'] = ' function > joinChatByInviteLink(invite_link)',
+      ['joinChatByUsernam'] = ' function > joinChatByUsernam(username)',
       ['createCall'] = ' function > createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer)',
       ['acceptCall'] = ' function > acceptCall(call_id, udp_p2p, udp_reflector, min_layer, max_layer)',
       ['blockUser'] = ' function > blockUser(user_id)',
@@ -1441,6 +1442,19 @@ function luagram_function.generateChatInviteLink(chat_id)
     luagram = 'generateChatInviteLink',
     chat_id = chat_id
   }
+end
+function luagram_function.joinChatByUsernam(username)
+  if type(username) == 'string' and 5 <= #username then
+    local result = luagram_function.searchPublicChat(username)
+    if result.type and result.type.luagram == 'chatTypeSupergroup' then
+      return function_core.run_table{
+        luagram = 'joinChat',
+        chat_id = result.id
+      }
+    else
+      return result
+    end
+  end
 end
 function luagram_function.checkChatInviteLink(invite_link)
   return function_core.run_table{
