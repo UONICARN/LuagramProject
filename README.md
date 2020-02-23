@@ -80,6 +80,7 @@ app.vardump(result)
 
 
 ## The Functions - version 1.0 Beta
+```joinChatByUsernam(username)```
 - match(table)[value]
 - ```help(function_name or '*')```
 - base64_encode(str)
