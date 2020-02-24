@@ -372,11 +372,23 @@ function luagram_function.secToClock(seconds)
 end
 function function_core.ProxyType(proxy_Type , secret_,username_,pass,httponly)
   if proxy_Type == 'mtproto' then 
-    return   {['@type'] = 'proxyTypeMtproto',secret =secret_}
+    return   {
+			luagram = 'proxyTypeMtproto',
+			secret =secret_
+		}
   elseif proxy_Type == 'socks5' then
-    return {['@type'] = 'proxyTypeSocks5' , username = username_,password = pass}
+    return {
+			luagram = 'proxyTypeSocks5' ,
+			username = username_,
+			password = pass
+		}
   elseif proxy_type == 'http' then
-  return {['@type'] = 'proxyTypeSocks5' , username = username_ , password = pass,http_only = httponly}
+  return {
+			luagram = 'proxyTypeHttp' ,
+			username = username_ ,
+			password = pass,
+			http_only = httponly
+		}
   end
 end
 function luagram_function.number_format(num)
