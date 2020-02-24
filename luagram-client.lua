@@ -225,7 +225,7 @@ luagram_helper = {
       ['sendInvoice'] = ' function > app.sendInvoice(chat_id, reply_to_message_id, invoice, title, description, photo_url, photo_size, photo_width, photo_height, payload, provider_token, provider_data, start_parameter, disable_notification, from_background, reply_markup)',
       ['sendForwarded'] = ' function > app.sendForwarded(chat_id, reply_to_message_id, from_chat_id, message_id, in_game_share, disable_notification, from_background, reply_markup)',
       ['sendPoll'] = ' function > app.sendPoll(chat_id, reply_to_message_id, question, options, pollType, is_anonymous, allow_multiple_answers)',
-      ['addProxy'] = ' function > app.addProxy(proxy_type, server, port, password_secret,username, http_only)',
+      ['addProxy'] = ' function > app.addProxy(proxy_type, server, port, username, password_secret, http_only)',
       ['enableProxy'] = ' function > app.enableProxy(proxy_id)',
       ['pingProxy'] = ' function > app.pingProxy(proxy_id)',
       ['disableProxy'] = ' function > app.disableProxy(proxy_id)'
@@ -556,14 +556,14 @@ function luagram_function.cancel_timer(timer_id)
     }
   end
 end
-function luagram_function.addProxy(proxy_type, server, port, password_secret,username, http_only)
-  if type(proxy_type) ~= 'string' then 
+function luagram_function.addProxy(proxy_type, server, port, username, password_secret, http_only)
+  if type(proxy_type) ~= 'string' then
     return {
-    luagram = false 
-    } 
+    luagram = false
+    }
   end
   local proxy_type = string.lower(proxy_type)
-  if proxy_type == 'mtproto' then 
+  if proxy_type == 'mtproto' then
     _type_ = {
       luagram = 'proxyTypeMtproto',
       secret = password_secret
@@ -581,13 +581,13 @@ function luagram_function.addProxy(proxy_type, server, port, password_secret,use
       password = password_secret,
       http_only = http_only
     }
-  else 
+  else
     return {
-      luagram = false 
+      luagram = false
     }
   end
   return function_core.run_table{
-    luagram = 'addProxy', 
+    luagram = 'addProxy',
     server = server,
     port = port,
     type = _type_
@@ -856,11 +856,11 @@ function luagram_function.getSecretChat(secret_chat_id)
   }
 end
 function luagram_function.getProxies()
-return function_core.run_table{ 
+return function_core.run_table{
   luagram = 'getProxies'
    }
   end
-  
+
 function luagram_function.getChat(chat_id)
   return function_core.run_table{
     luagram = 'getChat',
