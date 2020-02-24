@@ -838,6 +838,7 @@ return function_core.run_table{
   luagram = 'getProxies'
    }
   end
+  
 function luagram_function.getChat(chat_id)
   return function_core.run_table{
     luagram = 'getChat',
@@ -867,6 +868,18 @@ end
 function luagram_function.enableProxy(proxy_id)
   return function_core.run_table{
    luagram = 'enableProxy',
+    proxy_id = proxy_id
+  }
+end
+function luagram_function.pingProxy(proxy_id)
+  return function_core.run_table{
+   luagram = 'pingProxy',
+    proxy_id = proxy_id
+  }
+end
+function luagram_function.disableProxy(proxy_id)
+  return function_core.run_table{
+   luagram = 'disableProxy',
     proxy_id = proxy_id
   }
 end
