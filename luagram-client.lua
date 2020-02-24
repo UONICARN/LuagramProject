@@ -805,6 +805,11 @@ function luagram_function.getSecretChat(secret_chat_id)
     secret_chat_id = secret_chat_id
   }
 end
+function luagram_function.getProxies()
+return function_core.run_table{ 
+  luagram = 'getProxies'
+   }
+  end
 function luagram_function.getChat(chat_id)
   return function_core.run_table{
     luagram = 'getChat',
