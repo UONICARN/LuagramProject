@@ -447,9 +447,10 @@ function luagram_function.add_events(def,filters)
         luagram = false,
       }
     else
-      update_functions[#update_functions + 1] = {}
-      update_functions[#update_functions + 1].def = def
-      update_functions[#update_functions + 1].filters = filters
+      local function_id = #update_functions + 1
+      update_functions[function_id] = {}
+      update_functions[function_id].def = def
+      update_functions[function_id].filters = filters
       return {
         luagram = true,
       }
