@@ -370,7 +370,7 @@ function luagram_function.secToClock(seconds)
     return {hours=hours,mins=mins,secs=secs}
   end
 end
-function luagram_function.addProxy(proxy_type, server, port, username, password_secret)
+function luagram_function.addProxy(proxy_type, server, port, username, password_secret,http_only)
   if type(proxy_type) ~= 'string' then 
     return {
     luagram = false 
