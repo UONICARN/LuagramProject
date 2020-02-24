@@ -962,6 +962,14 @@ function luagram_function.searchMessages(query, offset_date, offset_chat_id, off
     limit = luagram_function.setLimit(100, limit)
   }
 end
+function luagram_function.addproxy(server_ip , port , proxy_type,secret,username,password,http_only)
+  return function_core.run_table{
+           luagram  = 'addProxy',
+                   server = server_ip,
+                        port = port,
+                            type = function_core.ProxyType(proxy_type , secret,username,password,http_only)
+                         }
+          end
 function luagram_function.searchChatMessages(chat_id, query, filter, sender_user_id, from_message_id, offset, limit)
   return function_core.run_table{
     luagram = 'searchChatMessages',
