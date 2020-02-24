@@ -370,26 +370,42 @@ function luagram_function.secToClock(seconds)
     return {hours=hours,mins=mins,secs=secs}
   end
 end
-function function_core.ProxyType(proxy_Type , secret_,username_,pass,httponly)
-  if proxy_Type == 'mtproto' then 
-    return   {
-			luagram = 'proxyTypeMtproto',
-			secret =secret_
-		}
-  elseif proxy_Type == 'socks5' then
+function luagram_function.addproxy(proxy_type, server, port, username, password_secret)
+  if type(proxy_type) ~= 'string' then 
     return {
-			luagram = 'proxyTypeSocks5' ,
-			username = username_,
-			password = pass
-		}
-  elseif proxy_type == 'http' then
-  return {
-			luagram = 'proxyTypeHttp' ,
-			username = username_ ,
-			password = pass,
-			http_only = httponly
-		}
+    luagram = false 
+    } 
   end
+  local proxy_type = string.lower(proxy_type)
+  if proxy_type == 'mtproto' then 
+    _type_ = {
+      luagram = 'proxyTypeMtproto',
+      secret = password_secret
+    }
+  elseif proxy_Type == 'socks5' then
+    _type_ = {
+      luagram = 'proxyTypeSocks5',
+      username = username,
+      password = password_secret
+    }
+  elseif proxy_Type == 'http' then
+    _type_ = {
+      luagram = 'proxyTypeHttp',
+      username = username,
+      password = password_secret,
+      http_only = http_only
+    }
+  else 
+    return {
+      luagram = false 
+    }
+  end
+  return function_core.run_table{
+    luagram = 'proxy', 
+    server = server,
+    port = port,
+    type = _type_
+  }
 end
 function luagram_function.number_format(num)
   local out = tonumber(num)
@@ -985,14 +1001,6 @@ function luagram_function.searchMessages(query, offset_date, offset_chat_id, off
     limit = luagram_function.setLimit(100, limit)
   }
 end
-function luagram_function.addproxy(server_ip , port , proxy_type,secret,username,password,http_only)
-  return function_core.run_table{
-           luagram  = 'addProxy',
-                   server = server_ip,
-                        port = port,
-                            type = function_core.ProxyType(proxy_type , secret,username,password,http_only)
-                         }
-          end
 function luagram_function.searchChatMessages(chat_id, query, filter, sender_user_id, from_message_id, offset, limit)
   return function_core.run_table{
     luagram = 'searchChatMessages',
