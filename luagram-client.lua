@@ -228,7 +228,8 @@ luagram_helper = {
       ['addProxy'] = ' function > app.addProxy(proxy_type, server, port, username, password_secret, http_only)',
       ['enableProxy'] = ' function > app.enableProxy(proxy_id)',
       ['pingProxy'] = ' function > app.pingProxy(proxy_id)',
-      ['disableProxy'] = ' function > app.disableProxy(proxy_id)'
+      ['disableProxy'] = ' function > app.disableProxy(proxy_id)',
+      ['getProxies'] = ' function > app.getProxies()'
 },
 colors_key = {
   reset =      0,
@@ -611,6 +612,11 @@ function luagram_function.disableProxy(proxy_id)
     proxy_id = proxy_id
   }
 end
+function luagram_function.getProxies()
+  return function_core.run_table{
+    luagram = 'getProxies'
+  }
+end
 function luagram_function.getChatId(chat_id)
   local chat_id = tostring(chat_id)
   if chat_id:match('^-100') then
@@ -855,12 +861,6 @@ function luagram_function.getSecretChat(secret_chat_id)
     secret_chat_id = secret_chat_id
   }
 end
-function luagram_function.getProxies()
-return function_core.run_table{
-  luagram = 'getProxies'
-   }
-  end
-
 function luagram_function.getChat(chat_id)
   return function_core.run_table{
     luagram = 'getChat',
