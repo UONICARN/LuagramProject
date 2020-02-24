@@ -401,8 +401,8 @@ function luagram_function.addProxy(proxy_type, server, port, username, password_
     }
   end
   return function_core.run_table{
-    luagram = 'proxy', 
-    server = server,
+     luagram = 'addProxy',
+    server = server_ip,
     port = port,
     type = _type_
   }
