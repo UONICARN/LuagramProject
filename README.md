@@ -80,6 +80,7 @@ app.vardump(result)
 
 
 ## The Functions - version 1.0 Beta
+- ```getProxies```
 - disableProxy(proxy_id)
 - ```pingProxy(proxy_id)```
 - enableProxy(proxy_id)
