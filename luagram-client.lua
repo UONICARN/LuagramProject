@@ -836,6 +836,12 @@ function luagram_function.getChatPinnedMessage(chat_id)
     chat_id = chat_id
   }
 end
+function luagram_function.enableProxy(proxy_id)
+  return function_core.run_table{
+   luagram = 'enableProxy',
+    proxy_id = proxy_id
+  }
+end
 function luagram_function.getMessages(chat_id, message_ids)
   return function_core.run_table{
     luagram = 'getMessages',
