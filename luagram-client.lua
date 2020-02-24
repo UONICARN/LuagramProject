@@ -225,7 +225,7 @@ luagram_helper = {
       ['sendInvoice'] = ' function > app.sendInvoice(chat_id, reply_to_message_id, invoice, title, description, photo_url, photo_size, photo_width, photo_height, payload, provider_token, provider_data, start_parameter, disable_notification, from_background, reply_markup)',
       ['sendForwarded'] = ' function > app.sendForwarded(chat_id, reply_to_message_id, from_chat_id, message_id, in_game_share, disable_notification, from_background, reply_markup)',
       ['sendPoll'] = ' function > app.sendPoll(chat_id, reply_to_message_id, question, options, pollType, is_anonymous, allow_multiple_answers)',
-      ['addProxy'] = ' function > app.addProxy(proxy_type, server, port, username, password_secret, http_only)',
+      ['addProxy'] = ' function > app.addProxy(proxy_type, server, port, password_secret,username, http_only)',
       ['enableProxy'] = ' function > app.enableProxy(proxy_id)',
       ['pingProxy'] = ' function > app.pingProxy(proxy_id)',
       ['disableProxy'] = ' function > app.disableProxy(proxy_id)'
@@ -556,7 +556,7 @@ function luagram_function.cancel_timer(timer_id)
     }
   end
 end
-function luagram_function.addProxy(proxy_type, server, port, username, password_secret, http_only)
+function luagram_function.addProxy(proxy_type, server, port, password_secret,username, http_only)
   if type(proxy_type) ~= 'string' then 
     return {
     luagram = false 
