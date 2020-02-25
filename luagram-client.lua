@@ -229,7 +229,8 @@ luagram_helper = {
       ['enableProxy'] = ' function > app.enableProxy(proxy_id)',
       ['pingProxy'] = ' function > app.pingProxy(proxy_id)',
       ['disableProxy'] = ' function > app.disableProxy(proxy_id)',
-      ['getProxies'] = ' function > app.getProxies()'
+      ['getProxies'] = ' function > app.getProxies()',
+      ['answerCallbackQuery'] = ' function > app.answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)'
 },
 colors_key = {
   reset =      0,
@@ -1206,6 +1207,16 @@ function luagram_function.getInlineQueryResults(bot_user_id, chat_id, latitude, 
     },
     query = tostring(query),
     offset = tostring(offset)
+  }
+end
+function luagram_function.answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)
+  return function_core.run_table{
+        luagram = 'answerCallbackQuery',
+        callback_query_id = callback_query_id,
+        show_alert = show_alert,
+        cache_time = cache_time,
+        text = text,
+        url = url,
   }
 end
 function luagram_function.getCallbackQueryAnswer(chat_id, message_id, payload, data, game_short_name)
@@ -2490,6 +2501,9 @@ function luagram.set_config(data)
       luagram.config.is_bot = false
       luagram.config.phone = phone_token
     end
+  elseif data.token and not luagram_function.exists('.luagram-'..data.session_name) then
+    luagram.config.is_bot = true
+    luagram.config.token = data.token
   end
   luagram.config.encryption_key = data.encryption_key or ''
   luagram.config.parameters = {
