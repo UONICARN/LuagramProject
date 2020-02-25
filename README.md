@@ -80,6 +80,8 @@ app.vardump(result)
 
 
 ## The Functions - version 1.0 Beta
+- ```leaveChat(chat_id)```
+- answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)
 - ```getProxies```
 - disableProxy(proxy_id)
 - ```pingProxy(proxy_id)```
