@@ -230,7 +230,8 @@ luagram_helper = {
       ['pingProxy'] = ' function > app.pingProxy(proxy_id)',
       ['disableProxy'] = ' function > app.disableProxy(proxy_id)',
       ['getProxies'] = ' function > app.getProxies()',
-      ['answerCallbackQuery'] = ' function > app.answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)'
+      ['answerCallbackQuery'] = ' function > app.answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)',
+      ['leaveChat'] = ' function > app.leaveChat(chat_id)',
 },
 colors_key = {
   reset =      0,
@@ -1560,6 +1561,12 @@ function luagram_function.joinChatByInviteLink(invite_link)
   return function_core.run_table{
     luagram = 'joinChatByInviteLink',
     invite_link = tostring(invite_link)
+  }
+end
+function luagram_function.leaveChat(chat_id)
+  return  function_core.run_table{
+    luagram = 'leaveChat',
+    chat_id = chat_id
   }
 end
 function luagram_function.createCall(user_id, udp_p2p, udp_reflector, min_layer, max_layer)
