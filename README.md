@@ -1,4 +1,3 @@
-
 <p align="center"><a href="https://t.me/Luagramteam"><img src="https://raw.githubusercontent.com/luagram/LuagramProject/master/luagram.png" width="300"src="">
 </p>
 L U A G R A M V-1.2
@@ -114,7 +113,7 @@ app.vardump(result)
 - getChatHistory(chat_id, from_message_id, offset, limit, only_local)
 - ```removeTopChat(category, chat_id)```
 - getSupergroupFullInfo(supergroup_id)
-- ```setSupergroupDescription(supergroup_id, description)```
+- ```setChatDescription(chat_id, description)```
 - searchMessages(query, offset_date, offset_chat_id, offset_message_id, limit)
 - ```checkChatUsername(chat_id, username)```
 - createNewSecretChat(user_id)
