@@ -160,7 +160,7 @@ app.vardump(result)
 - searchChatMembers(chat_id, query, limit)
 - ```logOut()```
 - getPublicMessageLink(chat_id, message_id, for_album)
-- ```unpinSupergroupMessage(supergroup_id)```
+- ```unpinChatMessage(supergroup_id)```
 - resetNetworkStatistics()
 - ```sendInvoice(chat_id, reply_to_message_id, invoice, title, description, photo_url, photo_size, photo_width, photo_height, payload, provider_token, provider_data, start_parameter, disable_notification, from_background, reply_markup)```
 - sendContact(chat_id, reply_to_message_id, phone_number, first_name, last_name, user_id, disable_notification, from_background, reply_markup)
@@ -228,7 +228,7 @@ app.vardump(result)
 - sendForwarded(chat_id, reply_to_message_id, from_chat_id, message_id, in_game_share, disable_notification, from_background, reply_markup)
 - ```getChatAdministrators(chat_id)```
 - getSavedAnimations()
-- ```pinSupergroupMessage(supergroup_id, message_id, disable_notification)```
+- ```pinChatMessage(supergroup_id, message_id, disable_notification)```
 - getChats(offset_chat_id, limit, offset_order)
 - ```searchStickerSet(name)```
 - setPassword(old_password, new_password, new_hint, set_recovery_email_address, new_recovery_email_address)
