@@ -178,9 +178,9 @@ luagram_helper = {
       ['toggleSupergroupInvites'] = ' function > app.toggleSupergroupInvites(supergroup_id, anyone_can_invite)',
       ['toggleSupergroupSignMessages'] = ' function > app.toggleSupergroupSignMessages(supergroup_id, sign_messages)',
       ['toggleSupergroupIsAllHistoryAvailable'] = ' function > app.toggleSupergroupIsAllHistoryAvailable(supergroup_id, is_all_history_available)',
-      ['setSupergroupDescription'] = ' function > app.setSupergroupDescription(supergroup_id, description)',
-      ['pinSupergroupMessage'] = ' function > app.pinSupergroupMessage(supergroup_id, message_id, disable_notification)',
-      ['unpinSupergroupMessage'] = ' function > app.unpinSupergroupMessage(supergroup_id)',
+      ['setChatDescription'] = ' function > app.setChatDescription(supergroup_id, description)',
+      ['pinChatMessage'] = ' function > app.pinChatMessage(supergroup_id, message_id, disable_notification)',
+      ['unpinChatMessage'] = ' function > app.unpinChatMessage(supergroup_id)',
       ['reportSupergroupSpam'] = ' function > app.reportSupergroupSpam(supergroup_id, user_id, message_ids)',
       ['getSupergroupMembers'] = ' function > app.getSupergroupMembers(supergroup_id, filter, query, offset, limit)',
       ['deleteSupergroup'] = ' function > app.deleteSupergroup(supergroup_id)',
@@ -1443,11 +1443,11 @@ function luagram_function.setChatMemberStatus(chat_id, user_id, status, right)
         can_send_polls = right[2] or 0,
         can_add_web_page_previews = right[3] or 1,
         can_change_info = right[4] or 0,
-        can_invite_users = right[5] or 0,
+        can_invite_users = right[5] or 1,
         can_pin_messages = right[6] or 0,
-        can_send_media_messages = right[7] or 0,
-        can_send_messages = right[8] or 0,
-        can_send_other_messages = right[9] or 0
+        can_send_media_messages = right[7] or 1,
+        can_send_messages = right[8] or 1,
+        can_send_other_messages = right[9] or 1
       },
       is_member = right[1] or 1,
       restricted_until_date = right[10] or 0,
@@ -1959,25 +1959,25 @@ function luagram_function.toggleSupergroupIsAllHistoryAvailable(supergroup_id, i
     is_all_history_available = is_all_history_available
   }
 end
-function luagram_function.setSupergroupDescription(supergroup_id, description)
+function luagram_function.setChatDescription(chat_id, description)
   return function_core.run_table{
-    luagram = 'setSupergroupDescription',
-    supergroup_id = luagram_function.getChatId(supergroup_id).id,
+    luagram = 'setChatDescription',
+    chat_id = chat_id,
     description = tostring(description)
   }
 end
-function luagram_function.pinSupergroupMessage(supergroup_id, message_id, disable_notification)
+function luagram_function.pinChatMessage(chat_id, message_id, disable_notification)
   return function_core.run_table{
-    luagram = 'pinSupergroupMessage',
-    supergroup_id = luagram_function.getChatId(supergroup_id).id,
+    luagram = 'pinChatMessage',
+    chat_id = chat_id,
     message_id = message_id,
     disable_notification = disable_notification
   }
 end
-function luagram_function.unpinSupergroupMessage(supergroup_id)
+function luagram_function.unpinChatMessage(chat_id)
   return function_core.run_table{
-    luagram = 'unpinSupergroupMessage',
-    supergroup_id = luagram_function.getChatId(supergroup_id).id
+    luagram = 'unpinChatMessage',
+    chat_id = chat_id
   }
 end
 function luagram_function.reportSupergroupSpam(supergroup_id, user_id, message_ids)
