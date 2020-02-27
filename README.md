@@ -79,6 +79,7 @@ app.vardump(result)
 
 
 ## The Functions - version 1.0 Beta
+- replyMarkup(input)
 - ```leaveChat(chat_id)```
 - answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)
 - ```getProxies```
