@@ -233,6 +233,8 @@ luagram_helper = {
       ['answerCallbackQuery'] = ' function > app.answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)',
       ['leaveChat'] = ' function > app.leaveChat(chat_id)',
       ['replyMarkup'] = ' function > app.replyMarkup(input)',
+      ['getPollVoters'] = ' function > app.getPollVoters(chat_id, message_id, option_id, offset, limit)',
+      ['setPollAnswer'] = ' function > app.setPollAnswer(chat_id, message_id, option_ids)',
 },
 colors_key = {
   reset =      0,
@@ -674,6 +676,16 @@ function luagram_function.replyMarkup(input)
       end
     end
     return result
+  elseif _type == 'forcereply' then
+    return {
+      luagram = 'replyMarkupForceReply',
+      is_personal = input.is_personal
+    }
+  elseif _type == 'remove' then
+    return {
+      luagram = 'replyMarkupRemoveKeyboard',
+      is_personal = input.is_personal
+    }
   end
 end
 function luagram_function.addProxy(proxy_type, server, port, username, password_secret, http_only)
@@ -797,8 +809,12 @@ function luagram_function.parseTextEntities(text, parse_mode)
   if type(parse_mode) == 'string' and string.lower(parse_mode) == 'lg' then
     for txt in text:gmatch('%%{(.-)}') do
       local _text, text_type = txt:match('(.*),(.*)')
+      local txt = string.gsub(txt,'+','++')
+      local text_type = string.gsub(text_type,' ','')
       if type(_text) == 'string' and type(text_type) == 'string' then
-        local text_type = string.gsub(text_type,' ','')
+        for key, value in pairs({['<'] = '&lt;',['>'] = '&gt;'}) do
+          _text = string.gsub(_text, key, value)
+        end
         if (string.lower(text_type) == 'b' or string.lower(text_type) == 'i' or string.lower(text_type) == 'c') then
           local text_type = string.lower(text_type)
           local text_type = text_type == 'c' and 'code' or text_type
@@ -809,7 +825,7 @@ function luagram_function.parseTextEntities(text, parse_mode)
           else
             link = text_type
           end
-          text = string.gsub(text,'%%{'..txt..'}','<a href="'..link..'">'.._text..'</a>')
+          text = string.gsub(text, '%%{'..txt..'}', '<a href="'..link..'">'.._text..'</a>')
         end
       end
     end
@@ -2567,6 +2583,32 @@ function luagram_function.sendPoll(chat_id, reply_to_message_id, question, optio
     }
   return luagram_function.sendMessage(chat_id, reply_to_message_id, input_message_content, parse_mode, disable_notification, from_background, reply_markup)
 end
+function luagram_function.getPollVoters(chat_id, message_id, option_id, offset, limit)
+  return function_core.run_table{
+    luagram = 'getPollVoters',
+    chat_id = chat_id,
+    message_id = message_id,
+    option_id = option_id,
+    limit = luagram_function.setLimit(50 , limit),
+    offset = offset
+  }
+end
+function luagram_function.setPollAnswer(chat_id, message_id, option_ids)
+  return function_core.run_table{
+    luagram = 'setPollAnswer',
+    chat_id = chat_id,
+    message_id = message_id,
+    option_ids = option_ids
+  }
+end
+function luagram_function.stopPoll(chat_id, message_id, reply_markup)
+  return function_core.run_table{
+    luagram = 'stopPoll',
+    chat_id = chat_id,
+    message_id = message_id,
+    reply_markup = reply_markup
+  }
+end
 function luagram.VERSION()
   print(luagram_function.colors('%{yellow}\27[5m'..luagram.logo),'\n\n')
   return true
@@ -2667,7 +2709,7 @@ function luagram.login(state)
       }
     end
   elseif state.luagram == 'error' and state.message == 'PHONE_CODE_INVALID' then
-    io.write(luagram_function.colors('\n%{green} Please enter the authentication code you received > '))
+    io.write(luagram_function.colors('\n%{green} code > '))
     local code = io.read()
     function_core.send_tdlib{
       luagram = 'checkAuthenticationCode',
@@ -2675,7 +2717,7 @@ function luagram.login(state)
     }
   elseif state.luagram == 'error' and state.message == 'PASSWORD_HASH_INVALID' then
     print(luagram_function.colors('%{red}two-step is wrong !'))
-    io.write(luagram_function.colors('\n%{green} Please enter your password > '))
+    io.write(luagram_function.colors('\n%{green} password > '))
     local password = io.read()
     function_core.send_tdlib{
       luagram = 'checkAuthenticationPassword',
@@ -2704,23 +2746,23 @@ function luagram.login(state)
       }
     end
   elseif state.luagram == 'authorizationStateWaitCode' then
-      io.write(luagram_function.colors('\n%{green} Please enter the authentication code you received > '))
+      io.write(luagram_function.colors('\n%{green} code > '))
       local code = io.read()
       function_core.send_tdlib{
         luagram = 'checkAuthenticationCode',
         code = code
       }
   elseif state.luagram == 'authorizationStateWaitPassword' then
-      io.write(luagram_function.colors('\n%{green} Please enter your password [ '..state.password_hint..' ] > '))
+      io.write(luagram_function.colors('\n%{green} password [ '..state.password_hint..' ] > '))
       local password = io.read()
       function_core.send_tdlib{
         luagram = 'checkAuthenticationPassword',
         password = password
       }
   elseif state.luagram == 'authorizationStateWaitRegistration' then
-    io.write(luagram_function.colors('\n%{green} Please enter your first name > '))
+    io.write(luagram_function.colors('\n%{green} first name > '))
     local first_name = io.read()
-    io.write(luagram_function.colors('\n%{green} Please enter your last name > '))
+    io.write(luagram_function.colors('\n%{green} last name > '))
     local last_name = io.read()
     function_core.send_tdlib{
       luagram = 'registerUser',
