@@ -79,6 +79,9 @@ app.vardump(result)
 
 
 ## The Functions - version 1.0 Beta
+- ```getPollVoters(chat_id, message_id, option_id, offset, limit)```
+- setPollAnswer(chat_id, message_id, option_ids)
+- ```stopPoll(chat_id, message_id, reply_markup)```
 - replyMarkup(input)
 - ```leaveChat(chat_id)```
 - answerCallbackQuery(callback_query_id, text, show_alert, url, cache_time)
