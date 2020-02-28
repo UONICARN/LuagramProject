@@ -235,6 +235,7 @@ luagram_helper = {
       ['replyMarkup'] = ' function > app.replyMarkup(input)',
       ['getPollVoters'] = ' function > app.getPollVoters(chat_id, message_id, option_id, offset, limit)',
       ['setPollAnswer'] = ' function > app.setPollAnswer(chat_id, message_id, option_ids)',
+      ['stopPoll'] = ' function > app.stopPoll(chat_id, message_id, reply_markup)',
 },
 colors_key = {
   reset =      0,
