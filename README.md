@@ -52,13 +52,17 @@ function main(update)
   if update.message then
     local update = update.message
     if update.content.text  then
-    if app.match('ping','luagram')[update.content.text.text] then
-      app.sendText(update.chat_id, update.id, "%{Hi I'm,b} a %{luagram,github.com/luagram}",'lg',true)
+      if app.match('ping','luagram')[update.content.text.text] then
+        app.sendText(update.chat_id, update.id, "%{Hi I'm,b} a %{luagram,github.com/luagram}",'lg',true)
+      end
     end
   end
-  end
-  end
 end
+local filter_update = {
+  'updateNewMessage',
+  'updateNewChannelMessage'
+}
+luagram.run(main,filter_update)
 local filter_update = {
   'updateNewMessage',
   'updateNewChannelMessage'
