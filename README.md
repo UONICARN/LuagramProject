@@ -1,6 +1,6 @@
 <p align="center"><a href="https://t.me/Luagramteam"><img src="https://raw.githubusercontent.com/luagram/LuagramProject/master/luagram.png" width="300"src="">
 </p>
-L U A G R A M V-1.2
+L U A G R A M V-1.3
 ---
                                                             
 <div align="center">
@@ -78,7 +78,9 @@ app.vardump(result)
 
 
 
-## The Functions - version 1.0 Beta
+## The Functions - version 1.3 Beta
+- ```app.answerInlineQuery(inline_query_id, results, next_offset, switch_pm_text, switch_pm_parameter, is_personal, cache_time)```
+- len(value)
 - ```getPollVoters(chat_id, message_id, option_id, offset, limit)```
 - setPollAnswer(chat_id, message_id, option_ids)
 - ```stopPoll(chat_id, message_id, reply_markup)```
