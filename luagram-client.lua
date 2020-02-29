@@ -1,8 +1,9 @@
 #!/usr/bin/env lua5.3
--- version 1.2
+-- version 1.3
 -- github.com/luagram
 local luagram_function, function_core, update_functions, luagram_timer = {}, {}, {}, {}
 local luagram = {
+  get_update = true,
   logo = [[
  _     _   _    _       ____  ____      _     __  __
 | |   | | | |  / \     / ___||  _ \    / \   |  \/  |
@@ -10,8 +11,7 @@ local luagram = {
 | |___| |_| |/ ___ \  | |_| ||  _ <  / ___ \ | |  | |
 |_____|\___//_/   \_\  \____||_| \_\/_/   \_\|_|  |_|
 
-VERSION : 1.2 / BETA
-]],
+VERSION : 1.3 / BETA]],
 luagram_helper = {
       ['match'] = ' function > app.match(table)[value]',
       ['base64_encode'] = ' function > app.base64_encode(str)',
@@ -235,7 +235,8 @@ luagram_helper = {
       ['replyMarkup'] = ' function > app.replyMarkup(input)',
       ['getPollVoters'] = ' function > app.getPollVoters(chat_id, message_id, option_id, offset, limit)',
       ['setPollAnswer'] = ' function > app.setPollAnswer(chat_id, message_id, option_ids)',
-      ['stopPoll'] = ' function > app.stopPoll(chat_id, message_id, reply_markup)',
+      ['len'] = ' function > app.len(value)',
+      ['answerInlineQuery'] = ' function > app.answerInlineQuery(inline_query_id, results, next_offset, switch_pm_text, switch_pm_parameter, is_personal, cache_time)'
 },
 colors_key = {
   reset =      0,
@@ -346,6 +347,18 @@ function_core.send_tdlib{
 LuaGram.setLogLevel(3)
 LuaGram.setLogPath('/usr/lib/x86_64-linux-gnu/lua/5.3/.luagram.log')
 -----------------------------------------------luagram_function
+function luagram_function.len(input)
+  if type(input) == 'table' then
+    size = 0
+    for key,value in pairs(input) do
+      size = size + 1
+    end
+    return size
+  else
+    size = tostring(input)
+    return #size
+  end
+end
 function luagram_function.match(...)
   local val = {}
   for no,v in ipairs({...}) do
@@ -584,7 +597,7 @@ function luagram_function.replyMarkup(input)
           result.rows[new_id][rows_new_id] = {
             luagram = 'inlineKeyboardButton',
             text = value.text,
-            type={
+            type = {
               luagram = 'inlineKeyboardButtonTypeUrl',
               url = value.url
             }
@@ -2610,8 +2623,385 @@ function luagram_function.stopPoll(chat_id, message_id, reply_markup)
     reply_markup = reply_markup
   }
 end
+function luagram_function.getInputMessage(value)
+  if type(value) ~= 'table' then
+    return value
+  end
+  if type(value.type) == 'string' then
+    if value.parse_mode and value.caption then
+      caption = luagram_function.parseTextEntities(value.caption, value.parse_mode)
+    elseif value.caption and not value.parse_mode then
+      caption = {
+        text = value.caption
+      }
+    elseif value.parse_mode and value.text then
+      text = luagram_function.parseTextEntities(value.text, value.parse_mode)
+    elseif not value.parse_mode and value.text then
+      text = {
+        text = value.text
+      }
+    end
+    value.type = string.lower(value.type)
+    if value.type == 'text' then
+      return {
+        luagram = 'inputMessageText',
+        disable_web_page_preview = value.disable_web_page_preview,
+        text = text,
+        clear_draft = value.clear_draft
+      }
+    elseif value.type == 'animation' then
+      return {
+        luagram = 'inputMessageAnimation',
+        animation = luagram_function.getInputFile(value.animation),
+        thumbnail = {
+          luagram = 'inputThumbnail',
+          thumbnail = luagram_function.getInputFile(value.thumbnail),
+          width = value.thumb_width,
+          height = value.thumb_height
+        },
+        caption = caption,
+        duration = value.duration,
+        width = value.width,
+        height = value.height
+      }
+    elseif value.type == 'audio' then
+      return {
+        luagram = 'inputMessageAudio',
+        audio = luagram_function.getInputFile(value.audio),
+        album_cover_thumbnail = {
+          luagram = 'inputThumbnail',
+          thumbnail = luagram_function.getInputFile(value.thumbnail),
+          width = value.thumb_width,
+          height = value.thumb_height
+        },
+        caption = caption,
+        duration = value.duration,
+        title = tostring(value.title),
+        performer = tostring(value.performer)
+      }
+    elseif value.type == 'document' then
+      return {
+        luagram = 'inputMessageDocument',
+        document = luagram_function.getInputFile(value.document),
+        thumbnail = {
+          luagram = 'inputThumbnail',
+          thumbnail = luagram_function.getInputFile(value.thumbnail),
+          width = value.thumb_width,
+          height = value.thumb_height
+        },
+        caption = caption
+      }
+    elseif value.type == 'photo' then
+      return {
+        luagram = 'inputMessagePhoto',
+        photo = luagram_function.getInputFile(value.photo),
+        thumbnail = {
+          luagram = 'inputThumbnail',
+          thumbnail = luagram_function.getInputFile(value.thumbnail),
+          width = value.thumb_width,
+          height = value.thumb_height
+        },
+        caption = caption,
+        added_sticker_file_ids = luagram_function.vectorize(value.added_sticker_file_ids),
+        width = value.width,
+        height = value.height,
+        ttl = value.ttl or 0
+      }
+    elseif value.text == 'video' then
+      return {
+        luagram = 'inputMessageVideo',
+        video = luagram_function.getInputFile(value.video),
+        thumbnail = {
+          luagram = 'inputThumbnail',
+          thumbnail = luagram_function.getInputFile(value.thumbnail),
+          width = value.thumb_width,
+          height = value.thumb_height
+        },
+        caption = caption,
+        added_sticker_file_ids = luagram_function.vectorize(value.added_sticker_file_ids),
+        duration = value.duration,
+        width = value.width,
+        height = value.height,
+        ttl = value.ttl or 0
+      }
+    elseif value.text == 'videonote' then
+      return {
+        luagram = 'inputMessageVideoNote',
+        video_note = luagram_function.getInputFile(value.video_note),
+        thumbnail = {
+          luagram = 'inputThumbnail',
+          thumbnail = luagram_function.getInputFile(value.thumbnail),
+          width = value.thumb_width,
+          height = value.thumb_height
+        },
+        duration = value.duration,
+        length = value.length
+      }
+    elseif value.text == 'voice' then
+      return {
+        luagram = 'inputMessageVoiceNote',
+        voice_note = luagram_function.getInputFile(value.voice_note),
+        caption = caption,
+        duration = value.duration,
+        waveform = value.waveform
+      }
+    elseif value.text == 'location' then
+      return {
+        luagram = 'inputMessageLocation',
+        location = {
+          luagram = 'location',
+          latitude = value.latitude,
+          longitude = value.longitude
+        },
+        live_period = value.liveperiod
+      }
+    elseif value.text == 'contact' then
+      return {
+        luagram = 'inputMessageContact',
+        contact = {
+          luagram = 'contact',
+          phone_number = tostring(value.phone_number),
+          first_name = tostring(value.first_name),
+          last_name = tostring(value.last_name),
+          user_id = value.user_id
+        }
+      }
+    elseif value.text == 'contact' then
+      return {
+        luagram = 'inputMessageContact',
+        contact = {
+          luagram = 'contact',
+          phone_number = tostring(value.phone_number),
+          first_name = tostring(value.first_name),
+          last_name = tostring(value.last_name),
+          user_id = value.user_id
+        }
+      }
+    end
+  end
+end
+function luagram_function.answerInlineQuery(inline_query_id, results, next_offset, switch_pm_text, switch_pm_parameter, is_personal, cache_time)
+  local answerInlineQueryResults = {}
+  for key, value in pairs(results) do
+    local newAnswerInlineQueryResults_id = #answerInlineQueryResults + 1
+    if type(value) == 'table' and type(value.type) == 'string' then
+      value.type = string.lower(value.type)
+      if value.type == 'gif' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultAnimatedGif',
+          id = value.id,
+          title = value.title,
+          thumbnail_url = value.thumbnail_url,
+          gif_url = value.gif_url,
+          gif_duration = value.gif_duration,
+          gif_width = value.gif_width,
+          gif_height = value.gif_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'mpeg4' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultAnimatedMpeg4',
+          id = value.id,
+          title = value.title,
+          thumbnail_url = value.thumbnail_url,
+          mpeg4_url = value.mpeg4_url,
+          mpeg4_duration = value.mpeg4_duration,
+          mpeg4_width = value.mpeg4_width,
+          mpeg4_height = value.mpeg4_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'article' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultArticle',
+          id = value.id,
+          url = value.url,
+          hide_url = value.hide_url,
+          title = value.title,
+          description = value.description,
+          thumbnail_url = value.thumbnail_url,
+          thumbnail_width = value.thumbnail_width,
+          thumbnail_height = value.thumbnail_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'audio' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultAudio',
+          id = value.id,
+          title = value.title,
+          performer = value.performer,
+          audio_url = value.audio_url,
+          audio_duration = value.audio_duration,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'contact' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultContact',
+          id = value.id,
+          contact = value.contact,
+          thumbnail_url = value.thumbnail_url,
+          thumbnail_width = value.thumbnail_width,
+          thumbnail_height = thumbnail_height.description,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'document' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultDocument',
+          id = value.id,
+          title = value.title,
+          description = value.description,
+          document_url = value.document_url,
+          mime_type = value.mime_type,
+          thumbnail_url = value.thumbnail_url,
+          thumbnail_width = value.thumbnail_width,
+          thumbnail_height = value.thumbnail_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'game' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultGame',
+          id = value.id,
+          game_short_name = value.game_short_name,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'location' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultLocation',
+          id = value.id,
+          location = value.location,
+          live_period = value.live_period,
+          title = value.title,
+          thumbnail_url = value.thumbnail_url,
+          thumbnail_width = value.thumbnail_width,
+          thumbnail_height = value.thumbnail_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'photo' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultPhoto',
+          id = value.id,
+          title = value.title,
+          description = value.description,
+          thumbnail_url = value.thumbnail_url,
+          photo_url = value.photo_url,
+          photo_width = value.photo_width,
+          photo_height = value.photo_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'sticker' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultSticker',
+          id = value.id,
+          thumbnail_url = value.thumbnail_url,
+          sticker_url = value.sticker_url,
+          sticker_width = value.sticker_width,
+          sticker_height = value.sticker_height,
+          photo_width = value.photo_width,
+          photo_height = value.photo_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'sticker' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultSticker',
+          id = value.id,
+          thumbnail_url = value.thumbnail_url,
+          sticker_url = value.sticker_url,
+          sticker_width = value.sticker_width,
+          sticker_height = value.sticker_height,
+          photo_width = value.photo_width,
+          photo_height = value.photo_height,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'video' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultVideo',
+          id = value.id,
+          title = value.title,
+          description = value.description,
+          thumbnail_url = value.thumbnail_url,
+          video_url = value.video_url,
+          mime_type = value.mime_type,
+          video_width = value.video_width,
+          video_height = value.video_height,
+          video_duration = value.video_duration,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      elseif value.type == 'videonote' then
+        answerInlineQueryResults[newAnswerInlineQueryResults_id] = {
+          luagram = 'inputInlineQueryResultVoiceNote',
+          id = value.id,
+          title = value.title,
+          voice_note_url = value.voice_note_url,
+          voice_note_duration = value.voice_note_duration,
+          reply_markup = luagram_function.replyMarkup{
+            type = 'inline',
+            data = value.reply_markup
+          },
+          input_message_content = luagram_function.getInputMessage(value.input)
+        }
+      end
+    end
+  end
+  return function_core.run_table{
+    luagram = 'answerInlineQuery',
+    inline_query_id = inline_query_id,
+    next_offset = next_offset,
+    switch_pm_text = switch_pm_text,
+    switch_pm_parameter = switch_pm_parameter,
+    is_personal = is_personal,
+    cache_time = cache_time,
+    results = answerInlineQueryResults,
+  }
+end
 function luagram.VERSION()
-  print(luagram_function.colors('%{yellow}\27[5m'..luagram.logo),'\n\n')
+  print(luagram_function.colors('%{yellow}\27[5m'..luagram.logo))
   return true
 end
 function luagram.run(main_def, filters)
@@ -2623,7 +3013,7 @@ function luagram.run(main_def, filters)
     update_functions[0].def = main_def
     update_functions[0].filters = filters
   end
-  while true do
+  while luagram.get_update do
     for timer_id, timer_data in pairs(luagram_timer) do
       if os.time() >= timer_data.run_in then
         xpcall(timer_data.def, function_core.print_error,timer_data.argv)
@@ -2635,9 +3025,7 @@ function luagram.run(main_def, filters)
       if type(update) ~= 'table' then
           goto finish
       end
-      if update.authorization_state then
-        luagram.login(update.authorization_state)
-      else
+      if luagram.login(update) then
         function_core._CALL_(update)
       end
     end
@@ -2672,6 +3060,9 @@ function luagram.set_config(data)
     luagram.config.is_bot = true
     luagram.config.token = data.token
   end
+  if not luagram_function.exists('.luagram-sessions') then
+    os.execute('sudo makdir .luagram-sessions')
+  end
   luagram.config.encryption_key = data.encryption_key or ''
   luagram.config.parameters = {
     luagram = 'setTdlibParameters',
@@ -2685,13 +3076,15 @@ function luagram.set_config(data)
     application_version = data.app_version or '1.0',
     enable_storage_optimizer = data.enable_storage_optimizer or true,
     use_pfs = data.use_pfs or true,
-    database_directory = '.luagram-'..data.session_name
+    database_directory = '.luagram-sessions/luagram-'..data.session_name
   }
   return luagram_function
 end
 function luagram.login(state)
-  if state.luagram == 'error' and (state.message == 'PHONE_NUMBER_INVALID' or state.message == 'ACCESS_TOKEN_INVALID') then
-    if state.message == 'PHONE_NUMBER_INVALID' then
+  if state.name == 'version' and state.value and state.value.value then
+    print(luagram_function.colors('%{magenta}TDLIB VERSION : '..state.value.value),'\n\n')
+  elseif state.authorization_state and state.authorization_state.luagram == 'error' and (state.authorization_state.message == 'PHONE_NUMBER_INVALID' or state.authorization_state.message == 'ACCESS_TOKEN_INVALID') then
+    if state.authorization_state.message == 'PHONE_NUMBER_INVALID' then
       print(luagram_function.colors('%{red} phone number invalid !'))
     else
       print(luagram_function.colors('%{red} access token invalid !'))
@@ -2709,14 +3102,14 @@ function luagram.login(state)
         phone_number = phone_token
       }
     end
-  elseif state.luagram == 'error' and state.message == 'PHONE_CODE_INVALID' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'error' and state.authorization_state.message == 'PHONE_CODE_INVALID' then
     io.write(luagram_function.colors('\n%{green} code > '))
     local code = io.read()
     function_core.send_tdlib{
       luagram = 'checkAuthenticationCode',
       code = code
     }
-  elseif state.luagram == 'error' and state.message == 'PASSWORD_HASH_INVALID' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'error' and state.authorization_state.message == 'PASSWORD_HASH_INVALID' then
     print(luagram_function.colors('%{red}two-step is wrong !'))
     io.write(luagram_function.colors('\n%{green} password > '))
     local password = io.read()
@@ -2724,17 +3117,17 @@ function luagram.login(state)
       luagram = 'checkAuthenticationPassword',
       password = password
     }
-  elseif state.luagram == 'authorizationStateWaitTdlibParameters' then
+  elseif state.luagram == 'authorizationStateWaitTdlibParameters' or (state.authorization_state and state.authorization_state.luagram == 'authorizationStateWaitTdlibParameters') then
     function_core.send_tdlib{
       luagram = 'setTdlibParameters',
       parameters = luagram.config.parameters
     }
-  elseif state.luagram == 'authorizationStateWaitEncryptionKey' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateWaitEncryptionKey' then
     function_core.send_tdlib{
       luagram = 'checkDatabaseEncryptionKey',
       encryption_key = luagram.config.encryption_key
     }
-  elseif state.luagram == 'authorizationStateWaitPhoneNumber' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateWaitPhoneNumber' then
     if luagram.config.is_bot then
       function_core.send_tdlib{
         luagram = 'checkAuthenticationBotToken',
@@ -2746,21 +3139,21 @@ function luagram.login(state)
         phone_number = luagram.config.phone
       }
     end
-  elseif state.luagram == 'authorizationStateWaitCode' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateWaitCode' then
       io.write(luagram_function.colors('\n%{green} code > '))
       local code = io.read()
       function_core.send_tdlib{
         luagram = 'checkAuthenticationCode',
         code = code
       }
-  elseif state.luagram == 'authorizationStateWaitPassword' then
-      io.write(luagram_function.colors('\n%{green} password [ '..state.password_hint..' ] > '))
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateWaitPassword' then
+      io.write(luagram_function.colors('\n%{green} password [ '..state.authorization_state.password_hint..' ] > '))
       local password = io.read()
       function_core.send_tdlib{
         luagram = 'checkAuthenticationPassword',
         password = password
       }
-  elseif state.luagram == 'authorizationStateWaitRegistration' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateWaitRegistration' then
     io.write(luagram_function.colors('\n%{green} first name > '))
     local first_name = io.read()
     io.write(luagram_function.colors('\n%{green} last name > '))
@@ -2770,9 +3163,14 @@ function luagram.login(state)
       first_name = first_name,
       last_name = last_name
     }
-  elseif state.luagram == 'authorizationStateReady' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateReady' then
     print(luagram_function.colors("%{green}>> login successfully let's rock <<"))
-  elseif state.luagram == 'authorizationStateClosed' then
+  elseif state.authorization_state and state.authorization_state.luagram == 'authorizationStateClosed' then
+    print(luagram_function.colors('%{red}>> authorization state closed '))
+    luagram.get_update = false
+  elseif state.luagram == 'error' and state.message then
+    print(luagram_function.colors('%{red}>> '..state.message))
+  elseif not (state.luagram and luagram_function.in_array({'updateConnectionState', 'updateSelectedBackground', 'updateConnectionState', 'updateOption', 'ok',}, state.luagram)) then
     return true
   end
 end
