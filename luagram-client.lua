@@ -3046,7 +3046,7 @@ function luagram.set_config(data)
     print(luagram_function.colors('%{red} please use session_name in your script !'))
     os.exit()
   end
-  if not data.token and not luagram_function.exists('.luagram-'..data.session_name) then
+  if not data.token and not luagram_function.exists('.luagram-sessions/'..data.session_name) then
     io.write(luagram_function.colors('\n%{green} please use your token or phone number > '))
     local phone_token = io.read()
     if phone_token:match('%d+:') then
@@ -3056,7 +3056,7 @@ function luagram.set_config(data)
       luagram.config.is_bot = false
       luagram.config.phone = phone_token
     end
-  elseif data.token and not luagram_function.exists('.luagram-'..data.session_name) then
+  elseif data.token and not luagram_function.exists('.luagram-sessions/'..data.session_name) then
     luagram.config.is_bot = true
     luagram.config.token = data.token
   end
@@ -3076,7 +3076,7 @@ function luagram.set_config(data)
     application_version = data.app_version or '1.0',
     enable_storage_optimizer = data.enable_storage_optimizer or true,
     use_pfs = data.use_pfs or true,
-    database_directory = '.luagram-sessions/luagram-'..data.session_name
+    database_directory = '.luagram-sessions/'..data.session_name
   }
   return luagram_function
 end
