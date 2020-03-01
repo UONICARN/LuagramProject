@@ -1040,7 +1040,7 @@ function luagram_function.getMessages(chat_id, message_ids)
   return function_core.run_table{
     luagram = 'getMessages',
     chat_id = chat_id,
-    message_ids = vectorize(message_ids)
+    message_ids = luagram_function.vectorize(message_ids)
   }
 end
 function luagram_function.getFile(file_id)
