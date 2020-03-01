@@ -3061,7 +3061,7 @@ function luagram.set_config(data)
     luagram.config.token = data.token
   end
   if not luagram_function.exists('.luagram-sessions') then
-    os.execute('sudo makdir .luagram-sessions')
+    os.execute('sudo mkdir .luagram-sessions')
   end
   luagram.config.encryption_key = data.encryption_key or ''
   luagram.config.parameters = {
