@@ -63,11 +63,6 @@ local filter_update = {
   'updateNewChannelMessage'
 }
 luagram.run(main,filter_update)
-local filter_update = {
-  'updateNewMessage',
-  'updateNewChannelMessage'
-}
-luagram.run(main,filter_update)
 
 
 
