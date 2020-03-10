@@ -133,6 +133,7 @@ luagram_helper = {
       ['getImportedContactCount'] = ' function > app.getImportedContactCount()',
       ['changeImportedContacts'] = ' function > app.changeImportedContacts(phone_number, first_name, last_name, user_id)',
       ['clearImportedContacts'] = ' function > app.clearImportedContacts()',
+      ['getContacts'] = ' function > app.getContacts()',
       ['getUserProfilePhotos'] = ' function > app.getUserProfilePhotos(user_id, offset, limit)',
       ['getStickers'] = ' function > app.getStickers(emoji, limit)',
       ['searchStickers'] = ' function > app.searchStickers(emoji, limit)',
@@ -1759,6 +1760,11 @@ function luagram_function.getBlockedUsers(offset, limit)
     luagram = 'getBlockedUsers',
     offset = offset or 0,
     limit = luagram_function.setLimit(100, limit)
+  }
+end
+function luagram_function.getContacts()
+  return function_core.run_table{
+    luagram = 'getContacts'
   }
 end
 function luagram_function.importContacts(phone_number, first_name, last_name, user_id)
