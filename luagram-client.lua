@@ -48,6 +48,7 @@ luagram_helper = {
       ['getSupergroupFullInfo'] = ' function > app.getSupergroupFullInfo(supergroup_id)',
       ['getSecretChat'] = ' function > app.getSecretChat(secret_chat_id)',
       ['getChat'] = ' function > app.getChat(chat_id)',
+      ['setChatSlowModeDelay'] = ' function > app.setChatSlowModeDelay(chat_id, slow_mode_delay)',
       ['getMessage'] = ' function > app.getMessage(chat_id, message_id)',
       ['getRepliedMessage'] = ' function > app.getRepliedMessage(chat_id, message_id)',
       ['getChatPinnedMessage'] = ' function > app.getChatPinnedMessage(chat_id)',
@@ -1359,6 +1360,13 @@ function luagram_function.deleteChatMessagesFromUser(chat_id, user_id)
     luagram = 'deleteChatMessagesFromUser',
     chat_id = chat_id,
     user_id = user_id
+  }
+end
+function luagram_function.setChatSlowModeDelay(chat_id, slow_mode_delay)
+  return function_core.run_table{
+    luagram = 'setChatSlowModeDelay',
+    chat_id = chat_id,
+    slow_mode_delay = slow_mode_delay
   }
 end
 function luagram_function.editMessageText(chat_id, message_id, text, parse_mode, disable_web_page_preview, clear_draft, reply_markup)
