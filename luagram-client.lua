@@ -1,7 +1,7 @@
 #!/usr/bin/env lua5.3
 -- version 1.3
 -- github.com/luagram
-local luagram_function, function_core, update_functions, luagram_timer = {}, {}, {}, {}
+local luagram_function, function_core, update_functions, luagram_timer, luagram_loop = {}, {}, {}, {}, {}
 local luagram = {
   get_update = true,
   logo = [[
@@ -13,6 +13,11 @@ local luagram = {
 
 VERSION : 1.3 / BETA]],
 luagram_helper = {
+      ['createFile'] = ' function > app.createFile(path, data, mode)',
+      ['get_loop'] = ' function > app.get_loop(loop_id)',
+      ['delete_loop'] = ' function > app.delete_loop(loop_id)',
+      ['edit_loop'] = ' function > app.edit_loop(loop_id, def, data)',
+      ['add_loop'] = ' function > app.add_loop(def, data)',
       ['match'] = ' function > app.match(table)[value]',
       ['base64_encode'] = ' function > app.base64_encode(str)',
       ['base64_decode'] = ' function > app.base64_decode(str)',
@@ -460,13 +465,76 @@ function luagram_function.colors(buffer)
   end
   return buffer .. '\27[0m'
 end
+function luagram_function.createFile(path, data, mode)
+  local mode = mode or 'w+'
+  local file = io.open(path, mode)
+  file:write(tostring(data))
+  file:close()
+end
+function luagram_function.add_loop(loop_def, loop_data)
+  if type(loop_def) ~= 'function' then
+    function_core.print_error('the add_loop def must be a function !')
+    return {
+      luagram = false,
+    }
+    else
+      local loop_id = #luagram_loop + 1
+      luagram_loop[loop_id] = {}
+      luagram_loop[loop_id].def = loop_def
+      luagram_loop[loop_id].data = loop_data
+      return {
+        luagram = true,
+        loop_id = #luagram_loop,
+      }
+  end
+end
+function luagram_function.get_loop(loop_id)
+  if luagram_loop[loop_id] then
+    return {
+      luagram = true,
+      loop_id = loop_id,
+      loop_def = luagram_loop[loop_id].def,
+      loop_data = luagram_loop[loop_id].data
+    }
+  else
+    return {
+    luagram = false
+  }
+  end
+end
+function luagram_function.edit_loop(loop_id, loop_def, loop_data)
+  if not luagram_loop[loop_id] then
+    return {
+      luagram = false,
+    }
+  else
+    luagram_loop[loop_id].def = loop_def
+    luagram_loop[loop_id].data = loop_data
+    return {
+      luagram = true,
+      loop_id = loop_id,
+    }
+  end
+end
+function luagram_function.delete_loop(loop_id)
+  if not luagram_loop[loop_id] then
+    return {
+      luagram = false,
+    }
+  else
+    luagram_loop[loop_id] = nil
+    return {
+      luagram = true,
+    }
+  end
+end
 function luagram_function.add_events(def,filters)
   if type(def) ~= 'function' then
     function_core.print_error('the add_events def must be a function !')
     return {
       luagram = false,
     }
-    elseif type(filters) ~= 'table' then
+  elseif filters and type(filters) ~= 'table' then
       function_core.print_error('the add_events filters must be a table !')
       return {
         luagram = false,
@@ -3020,6 +3088,9 @@ function luagram.run(main_def, filters)
     update_functions[0].filters = filters
   end
   while luagram.get_update do
+    for loop_id, loop in pairs(luagram_loop) do
+      xpcall(loop.def, function_core.print_error, loop.data)
+    end
     for timer_id, timer_data in pairs(luagram_timer) do
       if os.time() >= timer_data.run_in then
         xpcall(timer_data.def, function_core.print_error,timer_data.argv)
