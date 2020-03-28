@@ -234,7 +234,7 @@ app.vardump(result)
 - ```getChatAdministrators(chat_id)```
 - getSavedAnimations()
 - ```pinChatMessage(supergroup_id, message_id, disable_notification)```
-- getChats(offset_chat_id, limit, offset_order)
+-  getChats(chat_list, offset_order, offset_chat_id, limit)
 - ```searchStickerSet(name)```
 - setPassword(old_password, new_password, new_hint, set_recovery_email_address, new_recovery_email_address)
 - ```toggleSupergroupInvites(supergroup_id, anyone_can_invite)```
