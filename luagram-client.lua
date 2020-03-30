@@ -367,23 +367,6 @@ function luagram_function.match(...)
   end
   return val
 end
-function luagram_function.poll(chat_id)
-  return function_core.run_table{
-      luagram = 'sendMessage',
-      chat_id = chat_id,
-      reply_to_message_id = reply_to_message_id or 0,
-      input_message_content = {
-        luagram = 'inputMessagePoll',
-        is_anonymous = true,
-        question = 'test',
-        type = {
-          luagram = 'pollTypeRegular',
-          allow_multiple_answers = false
-        },
-        options = {'t','test2'}
-    }
-  }
-end
 function luagram_function.secToClock(seconds)
   local seconds = tonumber(seconds)
   if seconds <= 0 then
