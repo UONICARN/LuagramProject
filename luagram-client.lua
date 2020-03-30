@@ -13,6 +13,7 @@ local luagram = {
 
 VERSION : 1.3 / BETA]],
 luagram_helper = {
+      ['editInlineMessageText'] = ' function > app.editInlineMessageText(inline_message_id, input_message_content, reply_markup)',
       ['match'] = ' function > app.match(table)[value]',
       ['base64_encode'] = ' function > app.base64_encode(str)',
       ['base64_decode'] = ' function > app.base64_decode(str)',
@@ -2775,6 +2776,13 @@ function luagram_function.getInputMessage(value)
       }
     end
   end
+end
+function luagram_function.editInlineMessageText(inline_message_id, input_message_content, reply_markup)
+  return function_core.run_table{
+    luagram = 'editInlineMessageText',
+    input_message_content = luagram_function.getInputMessage(input_message_content), 
+    reply_markup = reply_markup
+  }	
 end
 function luagram_function.answerInlineQuery(inline_query_id, results, next_offset, switch_pm_text, switch_pm_parameter, is_personal, cache_time)
   local answerInlineQueryResults = {}
