@@ -75,7 +75,7 @@ luagram_helper = {
       ['sendMessageAlbum'] = ' function > app.sendMessageAlbum(chat_id, reply_to_message_id, input_message_contents, disable_notification, from_background)',
       ['sendBotStartMessage'] = ' function > app.sendBotStartMessage(bot_user_id, chat_id, parameter)',
       ['sendInlineQueryResultMessage'] = ' function > app.sendInlineQueryResultMessage(chat_id, reply_to_message_id, disable_notification, from_background, query_id, result_id)',
-      ['forwardMessages'] = ' function > app.forwardMessages(chat_id, from_chat_id, message_ids, disable_notification, from_background, as_album)',
+      ['forwardMessages'] = ' function > app.forwardMessages(chat_id, from_chat_id, message_ids, disable_notification, from_background, as_album, send_copy, remove_caption)',
       ['sendChatSetTtlMessage'] = ' function > app.sendChatSetTtlMessage(chat_id, ttl)',
       ['sendChatScreenshotTakenNotification'] = ' function > app.sendChatScreenshotTakenNotification(chat_id)',
       ['deleteMessages'] = ' function > app.deleteMessages(chat_id, message_ids, revoke)',
@@ -1245,15 +1245,17 @@ function luagram_function.sendInlineQueryResultMessage(chat_id, reply_to_message
     result_id = tostring(result_id)
   }
 end
-function luagram_function.forwardMessages(chat_id, from_chat_id, message_ids, disable_notification, from_background, as_album)
+function luagram_function.forwardMessages(chat_id, from_chat_id, message_ids, disable_notification, from_background, as_album, send_copy, remove_caption)
   return function_core.run_table{
     luagram = 'forwardMessages',
     chat_id = chat_id,
     from_chat_id = from_chat_id,
     message_ids = luagram_function.vectorize(message_ids),
     disable_notification = disable_notification,
-    from_background = from_background,
-    as_album = as_album
+    from_background = from_background
+    as_album = as_album,
+    send_copy = send_copy,
+    remove_caption = remove_caption
   }
 end
 function luagram_function.sendChatSetTtlMessage(chat_id, ttl)
@@ -2780,9 +2782,9 @@ end
 function luagram_function.editInlineMessageText(inline_message_id, input_message_content, reply_markup)
   return function_core.run_table{
     luagram = 'editInlineMessageText',
-    input_message_content = luagram_function.getInputMessage(input_message_content), 
+    input_message_content = luagram_function.getInputMessage(input_message_content),
     reply_markup = reply_markup
-  }	
+  }
 end
 function luagram_function.answerInlineQuery(inline_query_id, results, next_offset, switch_pm_text, switch_pm_parameter, is_personal, cache_time)
   local answerInlineQueryResults = {}
