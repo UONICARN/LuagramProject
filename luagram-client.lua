@@ -1252,7 +1252,7 @@ function luagram_function.forwardMessages(chat_id, from_chat_id, message_ids, di
     from_chat_id = from_chat_id,
     message_ids = luagram_function.vectorize(message_ids),
     disable_notification = disable_notification,
-    from_background = from_background
+    from_background = from_background,
     as_album = as_album,
     send_copy = send_copy,
     remove_caption = remove_caption
