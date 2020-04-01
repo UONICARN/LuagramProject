@@ -128,7 +128,7 @@ luagram_helper = {
       ['blockUser'] = ' function > app.blockUser(user_id)',
       ['unblockUser'] = ' function > app.unblockUser(user_id)',
       ['getBlockedUsers'] = ' function > app.getBlockedUsers(offset, limit)',
-      ['importContacts'] = ' function > app.importContacts(phone_number, first_name, last_name, user_id)',
+      ['importContacts'] = ' function > app.importContacts(contacts)',
       ['searchContacts'] = ' function > app.searchContacts(query, limit)',
       ['removeContacts'] = ' function > app.removeContacts(user_ids)',
       ['getImportedContactCount'] = ' function > app.getImportedContactCount()',
@@ -1760,16 +1760,20 @@ function luagram_function.getContacts()
     luagram = 'getContacts'
   }
 end
-function luagram_function.importContacts(phone_number, first_name, last_name, user_id)
-  return function_core.run_table{
-    luagram = 'importContacts',
-    contacts = {
+function luagram_function.importContacts(contacts)
+  local result = {}
+  for key, value in pairs(contacts) do
+    result[#result + 1] = {
       luagram = 'contact',
-      phone_number = tostring(phone_number),
-      first_name = tostring(first_name),
-      last_name = tostring(last_name),
+      phone_number = tostring(value.phone_number),
+      first_name = tostring(value.first_name),
+      last_name = tostring(value.last_name),
       user_id = user_id or 0
     }
+  end
+  return function_core.run_table{
+    luagram = 'importContacts',
+    contacts = result
   }
 end
 function luagram_function.searchContacts(query, limit)
