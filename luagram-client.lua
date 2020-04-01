@@ -1768,7 +1768,7 @@ function luagram_function.importContacts(contacts)
       phone_number = tostring(value.phone_number),
       first_name = tostring(value.first_name),
       last_name = tostring(value.last_name),
-      user_id = user_id or 0
+      user_id = value.user_id or 0
     }
   end
   return function_core.run_table{
